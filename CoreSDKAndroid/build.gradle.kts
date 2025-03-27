@@ -37,6 +37,11 @@ android {
     }
 }
 
+dependencies {
+    // core
+    implementation(libs.core)
+}
+
 afterEvaluate {
     publishing {
         publications {

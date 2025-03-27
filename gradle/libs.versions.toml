@@ -1,5 +1,7 @@
 [versions]
 
+core = "1.15.0"
+
 android = "8.9.1"
 kotlin = "2.1.20"
 
@@ -9,6 +11,8 @@ sdk-target = "35"
 jvm-target = "17"
 
 [libraries]
+
+core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 
 [plugins]
 
