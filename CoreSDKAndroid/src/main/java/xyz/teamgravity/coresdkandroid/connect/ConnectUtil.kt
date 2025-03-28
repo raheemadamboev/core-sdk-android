@@ -10,10 +10,6 @@ object ConnectUtil {
 
     private const val GRAVITY = "dev?id=5173702047357476752"
 
-    private fun getAppPlayStorePageUrl(context: Context): String {
-        return "https://play.google.com/store/apps/details?id=${context.packageName}"
-    }
-
     private fun getGravityPlayStorePageUrl(): String {
         return "https://play.google.com/store/apps/$GRAVITY"
     }
@@ -21,6 +17,16 @@ object ConnectUtil {
     ///////////////////////////////////////////////////////////////////////////
     // API
     ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns Play Store page url for the app.
+     *
+     * @param context
+     * Context.
+     */
+    fun getAppPlayStorePageUrl(context: Context): String {
+        return "https://play.google.com/store/apps/details?id=${context.packageName}"
+    }
 
     /**
      * Shares text with other apps.
