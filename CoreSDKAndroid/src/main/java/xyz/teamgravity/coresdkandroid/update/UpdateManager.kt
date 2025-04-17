@@ -63,12 +63,19 @@ class UpdateManager(
                 return@launch
             }
 
-            if (info.updateAvailability() != UpdateAvailability.UPDATE_AVAILABLE) {
+            val result = info.updateAvailability()
+
+            if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
                 Timber.i("start(): update is not available.")
                 return@launch
             }
 
-            _event.trySend(UpdateEvent.Available(Type.fromPriority(info.updatePriority())))
+            _event.trySend(
+                UpdateEvent.Available(
+                    type = Type.fromPriority(info.updatePriority()),
+                    inform = result == UpdateAvailability.UPDATE_AVAILABLE
+                )
+            )
         }
     }
 
@@ -84,7 +91,8 @@ class UpdateManager(
 
     suspend fun downloadAppUpdate(launcher: ActivityResultLauncher<IntentSenderRequest>) {
         val info = getAppUpdateInfoSafely() ?: return
-        if (info.updateAvailability() != UpdateAvailability.UPDATE_AVAILABLE) {
+        val result = info.updateAvailability()
+        if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
             Timber.w("downloadAppUpdate(): update is not available. Aborted the operation.")
             return
         }
@@ -99,6 +107,10 @@ class UpdateManager(
             launcher,
             AppUpdateOptions.defaultOptions(type.value)
         )
+    }
+
+    suspend fun installAppUpdate() {
+        manager.completeUpdate()
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -120,7 +132,11 @@ class UpdateManager(
     }
 
     sealed interface UpdateEvent {
-        data class Available(val type: Type) : UpdateEvent
+        data class Available(
+            val type: Type,
+            val inform: Boolean
+        ) : UpdateEvent
+
         data object Downloaded : UpdateEvent
     }
 }
