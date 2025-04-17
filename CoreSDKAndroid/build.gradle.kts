@@ -40,6 +40,20 @@ android {
 dependencies {
     // core
     implementation(libs.core)
+
+    // activity
+    implementation(libs.activity)
+
+    // update
+    implementation(libs.update)
+
+    // coroutines
+    implementation(libs.coroutines)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.services)
+
+    // timber
+    implementation(libs.timber)
 }
 
 afterEvaluate {
@@ -50,7 +64,7 @@ afterEvaluate {
 
                 groupId = "com.github.raheemadamboev"
                 artifactId = "core-sdk-android"
-                version = "1.0.1"
+                version = "1.0.3"
             }
         }
     }
