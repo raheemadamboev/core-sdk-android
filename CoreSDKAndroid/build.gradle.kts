@@ -40,6 +40,20 @@ android {
 dependencies {
     // core
     implementation(libs.core)
+
+    // activity
+    implementation(libs.activity)
+
+    // update
+    implementation(libs.update)
+
+    // coroutines
+    implementation(libs.coroutines)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.services)
+
+    // timber
+    implementation(libs.timber)
 }
 
 afterEvaluate {
