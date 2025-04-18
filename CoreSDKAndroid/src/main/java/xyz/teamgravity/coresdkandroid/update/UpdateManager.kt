@@ -89,24 +89,26 @@ class UpdateManager(
         return Type.fromPriority(info.updatePriority())
     }
 
-    suspend fun downloadAppUpdate(launcher: ActivityResultLauncher<IntentSenderRequest>) {
-        val info = getAppUpdateInfoSafely() ?: return
-        val result = info.updateAvailability()
-        if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
-            Timber.w("downloadAppUpdate(): update is not available. Aborted the operation.")
-            return
+    fun downloadAppUpdate(launcher: ActivityResultLauncher<IntentSenderRequest>) {
+        scope.launch {
+            val info = getAppUpdateInfoSafely() ?: return@launch
+            val result = info.updateAvailability()
+            if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
+                Timber.w("downloadAppUpdate(): update is not available. Aborted the operation.")
+                return@launch
+            }
+
+            val type = Type.fromPriority(info.updatePriority())
+            Timber.i("downloadAppUpdate(): starting $type update.")
+
+            manager.registerListener(listener)
+
+            manager.startUpdateFlowForResult(
+                info,
+                launcher,
+                AppUpdateOptions.defaultOptions(type.value)
+            )
         }
-
-        val type = Type.fromPriority(info.updatePriority())
-        Timber.i("downloadAppUpdate(): starting $type update.")
-
-        manager.registerListener(listener)
-
-        manager.startUpdateFlowForResult(
-            info,
-            launcher,
-            AppUpdateOptions.defaultOptions(type.value)
-        )
     }
 
     fun installAppUpdate() {
