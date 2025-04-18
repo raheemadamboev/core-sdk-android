@@ -109,7 +109,7 @@ class UpdateManager(
         )
     }
 
-    suspend fun installAppUpdate() {
+    fun installAppUpdate() {
         manager.completeUpdate()
     }
 
