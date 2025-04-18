@@ -33,9 +33,13 @@ class UpdateManager(
     private val _event = Channel<UpdateEvent>()
     val event: Flow<UpdateEvent> = _event.receiveAsFlow()
 
+    private var updateAvailableNotified: Boolean = false
+    private var updateDownloadedNotified: Boolean = false
+
     private val listener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+        if (!updateDownloadedNotified && state.installStatus() == InstallStatus.DOWNLOADED) {
             _event.trySend(UpdateEvent.Downloaded)
+            updateDownloadedNotified = true
         }
     }
 
@@ -57,9 +61,10 @@ class UpdateManager(
     fun start() {
         scope.launch {
             val info = getAppUpdateInfoSafely() ?: return@launch
-            if (info.installStatus() == InstallStatus.DOWNLOADED) {
+            if (!updateDownloadedNotified && info.installStatus() == InstallStatus.DOWNLOADED) {
                 Timber.i("start(): update is already downloaded.")
                 _event.trySend(UpdateEvent.Downloaded)
+                updateDownloadedNotified = true
                 return@launch
             }
 
@@ -70,12 +75,15 @@ class UpdateManager(
                 return@launch
             }
 
-            _event.trySend(
-                UpdateEvent.Available(
-                    type = Type.fromPriority(info.updatePriority()),
-                    inform = result == UpdateAvailability.UPDATE_AVAILABLE
-                )
-            )
+            if (result == UpdateAvailability.UPDATE_AVAILABLE) {
+                val type = Type.fromPriority(info.updatePriority())
+                if (type == Type.Optional && updateAvailableNotified) return@launch
+                _event.trySend(UpdateEvent.Available(type))
+                updateAvailableNotified = true
+            } else {
+                _event.trySend(UpdateEvent.StartDownload)
+            }
+
         }
     }
 
@@ -134,11 +142,8 @@ class UpdateManager(
     }
 
     sealed interface UpdateEvent {
-        data class Available(
-            val type: Type,
-            val inform: Boolean
-        ) : UpdateEvent
-
+        data class Available(val type: Type) : UpdateEvent
+        data object StartDownload : UpdateEvent
         data object Downloaded : UpdateEvent
     }
 }
