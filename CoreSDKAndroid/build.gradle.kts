@@ -22,6 +22,9 @@ android {
 
     kotlinOptions {
         jvmTarget = libs.versions.jvm.target.get()
+        freeCompilerArgs += listOf(
+            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
+        )
     }
 
     compileOptions {
@@ -44,8 +47,14 @@ dependencies {
     // activity
     implementation(libs.activity)
 
+    // preferences
+    implementation(libs.preferences)
+
     // update
     implementation(libs.update)
+
+    // review
+    implementation(libs.review)
 
     // coroutines
     implementation(libs.coroutines)
@@ -64,7 +73,7 @@ afterEvaluate {
 
                 groupId = "com.github.raheemadamboev"
                 artifactId = "core-sdk-android"
-                version = "1.0.6"
+                version = "1.0.7"
             }
         }
     }
