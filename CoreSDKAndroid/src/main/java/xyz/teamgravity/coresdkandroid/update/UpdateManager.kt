@@ -58,7 +58,7 @@ class UpdateManager(
     // API
     ///////////////////////////////////////////////////////////////////////////
 
-    fun start() {
+    fun monitor() {
         scope.launch {
             val info = getAppUpdateInfoSafely() ?: return@launch
             if (!updateDownloadedNotified && info.installStatus() == InstallStatus.DOWNLOADED) {
@@ -124,7 +124,7 @@ class UpdateManager(
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // MISC
+    // Misc
     ///////////////////////////////////////////////////////////////////////////
 
     enum class Type(
