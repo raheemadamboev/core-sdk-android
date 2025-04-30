@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.nio.ByteBuffer
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -22,20 +23,19 @@ class CryptoManager {
         const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
         const val KEYSTORE_ALIAS = "secret"
         const val ANDROID_KEYSTORE = "AndroidKeyStore"
-        val INITIAL_VECTOR: ByteArray = byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
     }
 
     private val keystore: KeyStore = getKeyStore()
 
     private fun encryptCipher(): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.ENCRYPT_MODE, getKey(), IvParameterSpec(INITIAL_VECTOR))
+            init(Cipher.ENCRYPT_MODE, getKey())
         }
     }
 
-    private fun decryptCipher(): Cipher {
+    private fun decryptCipher(iv: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(INITIAL_VECTOR))
+            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
         }
     }
 
@@ -70,8 +70,10 @@ class CryptoManager {
     suspend fun encrypt(value: String): String? {
         return withContext(Dispatchers.Default) {
             try {
-                val encryptedValue = encryptCipher().doFinal(value.toByteArray())
-                return@withContext Base64.encode(encryptedValue)
+                val cipher = encryptCipher()
+                val encryptedValue = cipher.doFinal(value.toByteArray())
+                val ivSize = ByteBuffer.allocate(Int.SIZE_BYTES).putInt(cipher.iv.size).array()
+                return@withContext Base64.encode(ivSize + cipher.iv + encryptedValue)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 Timber.e(e)
@@ -84,7 +86,9 @@ class CryptoManager {
         return withContext(Dispatchers.Default) {
             try {
                 val decodedValue = Base64.decode(value)
-                val decryptedValue = decryptCipher().doFinal(decodedValue)
+                val ivSize = ByteBuffer.wrap(decodedValue.sliceArray(0..<Int.SIZE_BYTES)).asIntBuffer().get()
+                val iv = decodedValue.sliceArray(Int.SIZE_BYTES..<(Int.SIZE_BYTES + ivSize))
+                val decryptedValue = decryptCipher(iv).doFinal(decodedValue.sliceArray((Int.SIZE_BYTES + ivSize)..<decodedValue.size))
                 return@withContext String(decryptedValue)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
