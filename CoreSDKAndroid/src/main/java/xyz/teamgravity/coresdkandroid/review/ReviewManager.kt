@@ -63,11 +63,12 @@ class ReviewManager(
                 }
                 value?.let(TimeUtil::fromLongToLocalDate) ?: LocalDate.now()
             }
-            val days = ChronoUnit.DAYS.between(installDate, LocalDate.now())
-            if (days >= installDays) {
-                val currentLaunchTimes = preferences.getInt(ReviewPreferences.LaunchTimes).first().orZero() + 1
-                preferences.upsertInt(ReviewPreferences.LaunchTimes, currentLaunchTimes)
-                if (currentLaunchTimes >= launchTimes) {
+
+            val currentLaunchTimes = preferences.getInt(ReviewPreferences.LaunchTimes).first().orZero() + 1
+            preferences.upsertInt(ReviewPreferences.LaunchTimes, currentLaunchTimes)
+            if (currentLaunchTimes >= launchTimes) {
+                val days = ChronoUnit.DAYS.between(installDate, LocalDate.now())
+                if (days >= installDays) {
                     val intervalDate = preferences.getLong(ReviewPreferences.IntervalDate).first()?.let(TimeUtil::fromLongToLocalDate)
                     if (intervalDate == null) {
                         _event.send(ReviewEvent.Eligible)
