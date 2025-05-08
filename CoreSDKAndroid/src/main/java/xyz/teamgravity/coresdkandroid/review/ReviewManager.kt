@@ -67,13 +67,13 @@ class ReviewManager(
                     value?.let(TimeUtil::fromLongToLocalDate) ?: LocalDate.now()
                 }
 
-                val days = ChronoUnit.DAYS.between(LocalDate.now(), installDate)
+                val days = ChronoUnit.DAYS.between(installDate, LocalDate.now())
                 if (days >= installDays) {
                     val intervalDate = preferences.getLong(ReviewPreferences.IntervalDate).first()?.let(TimeUtil::fromLongToLocalDate)
                     if (intervalDate == null) {
                         _event.send(ReviewEvent.Eligible)
                     } else {
-                        val intervalDays = ChronoUnit.DAYS.between(LocalDate.now(), intervalDate)
+                        val intervalDays = ChronoUnit.DAYS.between(intervalDate, LocalDate.now())
                         if (intervalDays >= remindInterval) {
                             _event.send(ReviewEvent.Eligible)
                         }
