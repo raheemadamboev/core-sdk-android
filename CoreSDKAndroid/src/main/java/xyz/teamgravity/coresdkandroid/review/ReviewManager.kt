@@ -55,20 +55,19 @@ class ReviewManager(
                 return@launch
             }
 
-            val currentLaunchTimes = preferences.getInt(ReviewPreferences.LaunchTimes).first().orZero() + 1
-            preferences.upsertInt(ReviewPreferences.LaunchTimes, currentLaunchTimes)
-            if (currentLaunchTimes >= launchTimes) {
-                val installDate = run {
-                    val value = preferences.getLong(ReviewPreferences.InstallDate).first()
-                    if (value == null) {
-                        Timber.d("monitor(): installDate is null. Put current date.")
-                        preferences.upsertLong(ReviewPreferences.InstallDate, System.currentTimeMillis())
-                    }
-                    value?.let(TimeUtil::fromLongToLocalDate) ?: LocalDate.now()
+            val installDate = run {
+                val value = preferences.getLong(ReviewPreferences.InstallDate).first()
+                if (value == null) {
+                    Timber.d("monitor(): installDate is null. Put current date.")
+                    preferences.upsertLong(ReviewPreferences.InstallDate, System.currentTimeMillis())
                 }
-
-                val days = ChronoUnit.DAYS.between(installDate, LocalDate.now())
-                if (days >= installDays) {
+                value?.let(TimeUtil::fromLongToLocalDate) ?: LocalDate.now()
+            }
+            val days = ChronoUnit.DAYS.between(installDate, LocalDate.now())
+            if (days >= installDays) {
+                val currentLaunchTimes = preferences.getInt(ReviewPreferences.LaunchTimes).first().orZero() + 1
+                preferences.upsertInt(ReviewPreferences.LaunchTimes, currentLaunchTimes)
+                if (currentLaunchTimes >= launchTimes) {
                     val intervalDate = preferences.getLong(ReviewPreferences.IntervalDate).first()?.let(TimeUtil::fromLongToLocalDate)
                     if (intervalDate == null) {
                         _event.send(ReviewEvent.Eligible)
