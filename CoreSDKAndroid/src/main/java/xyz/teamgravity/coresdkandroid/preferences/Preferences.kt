@@ -12,7 +12,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -38,14 +37,9 @@ class Preferences(
         encrypted: Boolean
     ) {
         withContext(Dispatchers.IO) {
-            val processedKey = if (encrypted) crypto.encrypt(key) else key
-            if (processedKey == null) {
-                Timber.e("upsertStringImp(): key is null after encrypting! Encryption error. Aborted the operation. Original key: <$key>.")
-                return@withContext
-            }
-
+            val preferencesKey = stringPreferencesKey(key)
             if (value == null) {
-                store.edit { it.remove(stringPreferencesKey(processedKey)) }
+                store.edit { it.remove(preferencesKey) }
                 return@withContext
             }
 
@@ -55,7 +49,7 @@ class Preferences(
                 return@withContext
             }
 
-            store.edit { it[stringPreferencesKey(processedKey)] = processedValue }
+            store.edit { it[preferencesKey] = processedValue }
         }
     }
 
@@ -139,16 +133,10 @@ class Preferences(
         default: String?,
         encrypted: Boolean
     ): Flow<String?> {
-        val processedKey = if (encrypted) crypto.encrypt(key) else key
-        if (processedKey == null) {
-            Timber.e("getStringImp(): key is null after encrypting. Encryption error. Returned null. Original key: <$key>.")
-            return flowOf(null)
-        }
-
         return store.data
             .catch { emit(handleIOException(it)) }
             .map { preferences ->
-                val value = preferences[stringPreferencesKey(processedKey)] ?: return@map default
+                val value = preferences[stringPreferencesKey(key)] ?: return@map default
                 return@map if (encrypted) crypto.decrypt(value) else value
             }.flowOn(Dispatchers.IO)
     }
