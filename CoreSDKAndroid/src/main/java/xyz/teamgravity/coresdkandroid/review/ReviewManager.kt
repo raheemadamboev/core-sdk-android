@@ -2,8 +2,6 @@ package xyz.teamgravity.coresdkandroid.review
 
 import android.app.Activity
 import android.content.Context
-import com.google.android.play.core.ktx.launchReview
-import com.google.android.play.core.ktx.requestReview
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -15,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import xyz.teamgravity.coresdkandroid.android.orZero
@@ -101,8 +100,8 @@ class ReviewManager(
             preferences.upsertBoolean(ReviewPreferences.ShouldCheck, false)
             try {
                 withContext(Dispatchers.IO) {
-                    val request = manager.requestReview()
-                    manager.launchReview(activity, request)
+                    val request = manager.requestReviewFlow().await()
+                    manager.launchReviewFlow(activity, request).await()
                 }
             } catch (e: ReviewException) {
                 Timber.e(e)
