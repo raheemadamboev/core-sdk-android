@@ -10,6 +10,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.sdk.min.get().toInt()
+        consumerProguardFiles.add(file("proguard-rules.pro"))
     }
 
     lint {
@@ -73,7 +74,7 @@ afterEvaluate {
 
                 groupId = "com.github.raheemadamboev"
                 artifactId = "core-sdk-android"
-                version = "1.0.12"
+                version = "1.0.13"
             }
         }
     }
