@@ -74,7 +74,7 @@ afterEvaluate {
 
                 groupId = "com.github.raheemadamboev"
                 artifactId = "core-sdk-android"
-                version = "1.0.13"
+                version = "1.0.14"
             }
         }
     }
