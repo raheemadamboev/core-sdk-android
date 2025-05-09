@@ -128,7 +128,7 @@ class Preferences(
         }
     }
 
-    private suspend fun getStringImp(
+    private fun getStringImp(
         key: String,
         default: String?,
         encrypted: Boolean
@@ -142,7 +142,7 @@ class Preferences(
     }
 
 
-    private suspend fun getIntImp(
+    private fun getIntImp(
         key: String,
         default: Int?,
         encrypted: Boolean
@@ -160,7 +160,7 @@ class Preferences(
         }
     }
 
-    private suspend fun getLongImp(
+    private fun getLongImp(
         key: String,
         default: Long?,
         encrypted: Boolean
@@ -178,7 +178,7 @@ class Preferences(
         }
     }
 
-    private suspend fun getBooleanImp(
+    private fun getBooleanImp(
         key: String,
         default: Boolean?,
         encrypted: Boolean
@@ -252,7 +252,7 @@ class Preferences(
     // Get
     ///////////////////////////////////////////////////////////////////////////
 
-    suspend fun getString(
+    fun getString(
         key: PreferencesKey,
         default: String? = key.default as? String
     ): Flow<String?> {
@@ -263,7 +263,7 @@ class Preferences(
         )
     }
 
-    suspend fun getInt(
+    fun getInt(
         key: PreferencesKey,
         default: Int? = key.default as? Int
     ): Flow<Int?> {
@@ -274,7 +274,7 @@ class Preferences(
         )
     }
 
-    suspend fun getLong(
+    fun getLong(
         key: PreferencesKey,
         default: Long? = key.default as? Long
     ): Flow<Long?> {
@@ -285,7 +285,7 @@ class Preferences(
         )
     }
 
-    suspend fun getBoolean(
+    fun getBoolean(
         key: PreferencesKey,
         default: Boolean? = key.default as? Boolean
     ): Flow<Boolean?> {
