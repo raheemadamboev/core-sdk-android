@@ -8,22 +8,22 @@ internal enum class ReviewPreferences(
     override val encrypted: Boolean
 ) : PreferencesKey {
     InstallDate(
-        key = "install_date",
+        key = "xyz.teamgravity.coresdkandroid.review.InstallDate",
         default = null,
         encrypted = false
     ),
     IntervalDate(
-        key = "interval_date",
+        key = "xyz.teamgravity.coresdkandroid.review.IntervalDate",
         default = null,
         encrypted = false
     ),
     LaunchTimes(
-        key = "launch_times",
+        key = "xyz.teamgravity.coresdkandroid.review.LaunchTimes",
         default = 0,
         encrypted = false
     ),
     ShouldCheck(
-        key = "should_check",
+        key = "xyz.teamgravity.coresdkandroid.review.ShouldCheck",
         default = true,
         encrypted = false
     );
