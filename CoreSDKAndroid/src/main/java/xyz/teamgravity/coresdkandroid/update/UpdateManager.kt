@@ -7,11 +7,11 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
-import com.google.android.play.core.install.InstallException
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -47,7 +47,8 @@ class UpdateManager(
         return withContext(Dispatchers.IO) {
             try {
                 return@withContext manager.appUpdateInfo.await()
-            } catch (e: InstallException) {
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Timber.e(e)
                 return@withContext null
             }
