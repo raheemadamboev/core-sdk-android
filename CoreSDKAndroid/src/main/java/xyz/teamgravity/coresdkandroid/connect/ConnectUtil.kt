@@ -10,10 +10,6 @@ object ConnectUtil {
 
     private const val GRAVITY = "dev?id=5173702047357476752"
 
-    private fun getGravityPlayStorePageUrl(): String {
-        return "https://play.google.com/store/apps/$GRAVITY"
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // API
     ///////////////////////////////////////////////////////////////////////////
@@ -23,9 +19,15 @@ object ConnectUtil {
      *
      * @param context
      * Context.
+     * @param packageName
+     * Package name of the app. Current app's package name is provided by default.
+     *
      */
-    fun getAppPlayStorePageUrl(context: Context): String {
-        return "https://play.google.com/store/apps/details?id=${context.packageName}"
+    fun getAppPlayStorePageUrl(
+        context: Context,
+        packageName: String = context.packageName
+    ): String {
+        return "https://play.google.com/store/apps/details?id=$packageName"
     }
 
     /**
@@ -82,14 +84,25 @@ object ConnectUtil {
      *
      * @param context
      * Context.
+     * @param packageName
+     * Package name of the app. Current app's package name is provided by default.
      */
     fun viewAppPlayStorePage(
-        context: Context
+        context: Context,
+        packageName: String = context.packageName
     ) {
         context.safelyStartActivity(
-            intent = Intent(Intent.ACTION_VIEW, "market://details?id=${context.packageName}".toUri()),
+            intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()),
             onError = {
-                context.safelyStartActivity(Intent(Intent.ACTION_VIEW, getAppPlayStorePageUrl(context).toUri()))
+                context.safelyStartActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        getAppPlayStorePageUrl(
+                            context = context,
+                            packageName = packageName
+                        ).toUri()
+                    )
+                )
             }
         )
     }
@@ -106,7 +119,7 @@ object ConnectUtil {
             intent = Intent(Intent.ACTION_VIEW, "market://$GRAVITY".toUri()),
             onError = {
                 context.safelyStartActivity(
-                    Intent(Intent.ACTION_VIEW, getGravityPlayStorePageUrl().toUri())
+                    Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/$GRAVITY".toUri())
                 )
             }
         )
