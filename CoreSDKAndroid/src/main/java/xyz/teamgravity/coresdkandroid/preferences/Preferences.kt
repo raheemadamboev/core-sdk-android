@@ -137,7 +137,7 @@ class Preferences(
             .catch { emit(handleIOException(it)) }
             .map { preferences ->
                 val value = preferences[stringPreferencesKey(key)] ?: return@map default
-                return@map if (encrypted) crypto.decrypt(value) else value
+                return@map if (encrypted) (crypto.decrypt(value) ?: default) else value
             }.flowOn(Dispatchers.IO)
     }
 
@@ -152,7 +152,7 @@ class Preferences(
                 key = key,
                 default = default?.toString(),
                 encrypted = true
-            ).map { it?.toInt() }
+            ).map { it?.toInt() ?: default }
         } else {
             store.data
                 .catch { emit(handleIOException(it)) }
@@ -170,7 +170,7 @@ class Preferences(
                 key = key,
                 default = default?.toString(),
                 encrypted = true
-            ).map { it?.toLong() }
+            ).map { it?.toLong() ?: default }
         } else {
             store.data
                 .catch { emit(handleIOException(it)) }
@@ -188,7 +188,7 @@ class Preferences(
                 key = key,
                 default = default?.toString(),
                 encrypted = true
-            ).map { it?.toBooleanStrictOrNull() }
+            ).map { it?.toBooleanStrictOrNull() ?: default }
         } else {
             store.data
                 .catch { emit(handleIOException(it)) }
