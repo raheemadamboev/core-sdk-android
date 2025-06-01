@@ -22,7 +22,7 @@ class NotificationManager(
     ///////////////////////////////////////////////////////////////////////////
 
     fun canPostNotification(): Boolean {
-        if (BuildUtil.atLeastTiramisu()) return manager.areNotificationsEnabled()
+        if (BuildUtil.atLeast33()) return manager.areNotificationsEnabled()
         return true
     }
 
