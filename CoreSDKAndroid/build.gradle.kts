@@ -66,15 +66,15 @@ dependencies {
     implementation(libs.timber)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            register<MavenPublication>("release") {
-                from(components["release"])
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.raheemadamboev"
+            artifactId = "core-sdk-android"
+            version = "1.0.22"
 
-                groupId = "com.github.raheemadamboev"
-                artifactId = "core-sdk-android"
-                version = "1.0.21"
+            afterEvaluate {
+                from(components["release"])
             }
         }
     }
