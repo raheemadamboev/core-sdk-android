@@ -65,8 +65,6 @@ class NotificationManager(
             setLargeIcon(BitmapFactory.decodeResource(application.resources, largeIcon))
             if (title != null) setContentTitle(title)
             setContentText(message)
-            setGroup(channelId)
-            setGroupSummary(false)
             setVisibility(visibility)
             setAutoCancel(autoCancel)
             setPriority(priority)
