@@ -2,9 +2,9 @@ package xyz.teamgravity.coresdkandroid.review
 
 import android.app.Activity
 import android.content.Context
-import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -103,7 +103,8 @@ class ReviewManager(
                     val request = manager.requestReviewFlow().await()
                     manager.launchReviewFlow(activity, request).await()
                 }
-            } catch (e: ReviewException) {
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Timber.e(e)
                 ConnectUtil.viewAppPlayStorePage(activity)
             }
