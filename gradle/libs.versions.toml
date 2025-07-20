@@ -8,13 +8,12 @@ review = "2.0.2"
 coroutines = "1.10.2"
 timber = "5.0.1"
 
-android = "8.10.1"
-kotlin = "2.1.21"
+android = "8.11.1"
+kotlin = "2.2.0"
 
 sdk-min = "26"
 sdk-compile = "35"
 sdk-target = "35"
-jvm-target = "17"
 
 [libraries]
 
