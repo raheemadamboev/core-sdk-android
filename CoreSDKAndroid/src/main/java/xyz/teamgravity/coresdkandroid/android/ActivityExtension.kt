@@ -86,15 +86,26 @@ fun Activity.overridePost34EnterTransition(
 }
 
 /**
- * Sets the status bar to have light content (dark icons).
+ * Sets the status bar and navigation bar to have light content (dark icons).
  */
-fun Activity.setLightStatusBar() {
-    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+fun Activity.setLightBars() {
+    val window = WindowCompat.getInsetsController(window, window.decorView)
+    window.isAppearanceLightStatusBars = true
+    window.isAppearanceLightNavigationBars = true
 }
 
 /**
- * Sets the status bar to have dark content (light icons).
+ * Sets the status bar and navigation to have dark content (light icons).
  */
-fun Activity.setDarkStatusBar() {
-    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+fun Activity.setDarkBars() {
+    val window = WindowCompat.getInsetsController(window, window.decorView)
+    window.isAppearanceLightStatusBars = false
+    window.isAppearanceLightNavigationBars = false
+}
+
+/**
+ * Sets the navigation bar to have transparent background.
+ */
+fun Activity.setNavigationBarTransparent() {
+    if (BuildUtil.atLeast29()) window.isNavigationBarContrastEnforced = false
 }
