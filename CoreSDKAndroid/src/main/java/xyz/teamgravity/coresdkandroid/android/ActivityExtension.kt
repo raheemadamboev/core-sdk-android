@@ -6,6 +6,7 @@ import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 
 /**
  * Sets status bar and navigation bar color properly according to sdk int.
@@ -82,4 +83,18 @@ fun Activity.overridePost34EnterTransition(
     if (BuildUtil.atLeast34()) {
         overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, enterAnim, exitAnim)
     }
+}
+
+/**
+ * Sets the status bar to have light content (dark icons).
+ */
+fun Activity.setLightStatusBar() {
+    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+}
+
+/**
+ * Sets the status bar to have dark content (light icons).
+ */
+fun Activity.setDarkStatusBar() {
+    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
 }
