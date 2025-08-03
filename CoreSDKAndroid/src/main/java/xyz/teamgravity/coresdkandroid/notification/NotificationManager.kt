@@ -1,6 +1,5 @@
 package xyz.teamgravity.coresdkandroid.notification
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
@@ -13,7 +12,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Action
 import xyz.teamgravity.coresdkandroid.android.BuildUtil
 
-@SuppressLint("NotificationPermission")
 class NotificationManager(
     private val application: Application,
     private val manager: NotificationManager
