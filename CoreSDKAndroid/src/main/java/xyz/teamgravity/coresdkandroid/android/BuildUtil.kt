@@ -98,4 +98,14 @@ object BuildUtil {
     fun atLeast35(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM
     }
+
+    /**
+     * Checks if device is running at least on Baklava (Android 16).
+     *
+     * @return true if device is running on API 36 (Android 16) or above, false otherwise.
+     */
+    @ChecksSdkIntAtLeast(Build.VERSION_CODES.BAKLAVA)
+    fun atLeast36(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
+    }
 }
