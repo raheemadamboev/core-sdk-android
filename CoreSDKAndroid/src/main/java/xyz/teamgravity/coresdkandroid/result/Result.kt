@@ -46,8 +46,8 @@ sealed class Result<out D, out E : RootError> {
         onFailure: (error: E) -> R
     ): R {
         return when (this) {
-            is Success -> onSuccess(this.data)
-            is Error -> onFailure(this.error)
+            is Success -> onSuccess(data)
+            is Error -> onFailure(error)
         }
     }
 
@@ -59,8 +59,8 @@ sealed class Result<out D, out E : RootError> {
         onFailure: (error: E) -> Unit
     ) {
         when (this) {
-            is Success -> onSuccess(this.data)
-            is Error -> onFailure(this.error)
+            is Success -> onSuccess(data)
+            is Error -> onFailure(error)
         }
     }
 
@@ -71,7 +71,7 @@ sealed class Result<out D, out E : RootError> {
         action: (error: E) -> Unit
     ) {
         if (this is Error) {
-            action(this.error)
+            action(error)
         }
     }
 
@@ -82,8 +82,18 @@ sealed class Result<out D, out E : RootError> {
         action: (data: D) -> Unit
     ) {
         if (this is Success) {
-            action(this.data)
+            action(data)
         }
+    }
+
+    /**
+     * Converts this result to a "basic" result of type `Result<Unit, E>`.
+     */
+    fun toBasic(): Result<Unit, E> {
+        return fold(
+            onSuccess = { success() },
+            onFailure = { Error(it) }
+        )
     }
 
     override fun toString(): String = when (val value = this) {
