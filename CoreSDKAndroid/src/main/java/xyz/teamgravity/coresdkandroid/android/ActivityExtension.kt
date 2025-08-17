@@ -7,6 +7,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
 /**
  * Sets status bar and navigation bar color properly according to sdk int.
@@ -108,4 +109,18 @@ fun Activity.setDarkBars() {
  */
 fun Activity.setNavigationBarTransparent() {
     if (BuildUtil.atLeast29()) window.isNavigationBarContrastEnforced = false
+}
+
+/**
+ * Shows the virtual keyboard.
+ */
+fun Activity.showKeyboard() {
+    WindowCompat.getInsetsController(window, window.decorView).show(WindowInsetsCompat.Type.ime())
+}
+
+/**
+ * Hides the virtual keyboard.
+ */
+fun Activity.hideKeyboard() {
+    WindowCompat.getInsetsController(window, window.decorView).hide(WindowInsetsCompat.Type.ime())
 }
