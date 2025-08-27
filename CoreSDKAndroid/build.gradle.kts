@@ -77,7 +77,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.raheemadamboev"
             artifactId = "core-sdk-android"
-            version = "1.0.36"
+            version = "1.0.37"
 
             afterEvaluate {
                 from(components["release"])

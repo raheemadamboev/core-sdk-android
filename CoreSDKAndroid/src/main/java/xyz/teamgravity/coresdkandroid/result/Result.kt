@@ -38,6 +38,16 @@ sealed class Result<out D, out E : RootError> {
     }
 
     /**
+     * Maps the data when result is success. Returns the original error value if result is failure.
+     */
+    inline fun <R> map(transform: (data: D) -> R): Result<R, E> {
+        return fold(
+            onSuccess = { Success(transform(it)) },
+            onFailure = { Error(it) }
+        )
+    }
+
+    /**
      * Returns the result of onSuccess for the encapsulated value if this instance represents success or the result of onFailure function for
      * the encapsulated error if it is failure.
      */
