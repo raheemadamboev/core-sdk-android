@@ -1,6 +1,6 @@
 [versions]
 
-core = "1.16.0"
+core = "1.17.0"
 activity = "1.10.1"
 preferences = "1.1.7"
 update = "2.1.0"
@@ -8,8 +8,8 @@ review = "2.0.2"
 coroutines = "1.10.2"
 timber = "5.0.1"
 
-android = "8.12.0"
-kotlin = "2.2.0"
+android = "8.12.2"
+kotlin = "2.2.10"
 
 sdk-min = "26"
 sdk-compile = "36"
