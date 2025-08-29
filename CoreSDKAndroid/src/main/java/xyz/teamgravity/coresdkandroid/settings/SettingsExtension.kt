@@ -17,3 +17,11 @@ fun Context.navigateAppLocaleSettings() {
     intent.data = Uri.fromParts("package", packageName, null)
     safelyStartActivity(intent)
 }
+
+/**
+ * Navigates the user to the wireless settings activity if it exists. Otherwise, does nothing.
+ */
+fun Context.navigateWirelessSettings() {
+    val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+    safelyStartActivity(intent)
+}
