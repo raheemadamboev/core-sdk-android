@@ -3,6 +3,16 @@ package xyz.teamgravity.coresdkandroid.result
 enum class GeneralError : Error {
 
     /**
+     * Signifies that an operation could not be completed due to a lack of active internet connectivity
+     * on the device. The attempted call requires an internet connection to reach a remote service
+     * or resource, but no such connection was detected.
+     *
+     * This error typically means the network request was not even attempted because the system
+     * reported no available network.
+     */
+    Internet,
+
+    /**
      * Indicates an error returned by a remote server.
      * This could be due to various server-side issues like internal server errors,
      * bad requests processed by the server, or service unavailability.
@@ -36,6 +46,10 @@ enum class GeneralError : Error {
     Serialization;
 
     companion object {
+        fun <D> internet(): Result<D, GeneralError> {
+            return Result.Error(Internet)
+        }
+
         fun <D> server(): Result<D, GeneralError> {
             return Result.Error(Server)
         }
