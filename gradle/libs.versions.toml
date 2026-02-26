@@ -1,15 +1,14 @@
 [versions]
 
 core = "1.17.0"
-activity = "1.10.1"
-preferences = "1.1.7"
+activity = "1.12.4"
+preferences = "1.2.0"
 update = "2.1.0"
 review = "2.0.2"
 coroutines = "1.10.2"
 timber = "5.0.1"
 
-android = "8.12.2"
-kotlin = "2.2.10"
+android = "9.0.1"
 
 sdk-min = "26"
 sdk-compile = "36"
@@ -30,4 +29,3 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 [plugins]
 
 library = { id = "com.android.library", version.ref = "android" }
-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
