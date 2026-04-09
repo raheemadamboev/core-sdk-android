@@ -32,19 +32,20 @@ class NotificationManager(
         @StringRes description: Int,
         importance: Int = NotificationManager.IMPORTANCE_DEFAULT,
         vibrate: Boolean = true,
-        showBadge: Boolean = true
+        showBadge: Boolean = true,
+        force: Boolean = false
     ) {
-        if (canPostNotification()) {
-            val channel = NotificationChannel(
-                id,
-                application.getString(name),
-                importance
-            )
-            channel.description = application.getString(description)
-            channel.enableVibration(vibrate)
-            channel.setShowBadge(showBadge)
-            manager.createNotificationChannel(channel)
-        }
+        if (!force && !canPostNotification()) return
+
+        val channel = NotificationChannel(
+            id,
+            application.getString(name),
+            importance
+        )
+        channel.description = application.getString(description)
+        channel.enableVibration(vibrate)
+        channel.setShowBadge(showBadge)
+        manager.createNotificationChannel(channel)
     }
 
     fun createNotification(
