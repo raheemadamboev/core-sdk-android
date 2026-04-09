@@ -3,6 +3,7 @@ package xyz.teamgravity.coresdkandroid.android
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import timber.log.Timber
 
 /**
  * Safely starts activity. If activity is not found or not permitted, calls [onError] lambda.
@@ -19,8 +20,10 @@ fun Context.safelyStartActivity(
     try {
         startActivity(intent)
     } catch (e: ActivityNotFoundException) {
+        Timber.e(e)
         onError()
     } catch (e: SecurityException) {
+        Timber.e(e)
         onError()
     }
 }
