@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.library)
@@ -7,7 +7,12 @@ plugins {
 
 android {
     namespace = "xyz.teamgravity.coresdkandroid"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
+
+    compileSdk {
+        version = release(libs.versions.sdk.compile.get().toInt()) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         minSdk = libs.versions.sdk.min.get().toInt()
@@ -23,19 +28,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        target {
-            compilerOptions {
-                jvmTarget = JvmTarget.JVM_17
-                freeCompilerArgs.addAll(
-                    "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
-                )
-            }
-        }
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     publishing {
@@ -76,11 +70,19 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.raheemadamboev"
             artifactId = "core-sdk-android"
-            version = "1.0.40"
+            version = "1.0.42"
 
             afterEvaluate {
                 from(components["release"])
             }
         }
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
+        )
     }
 }
