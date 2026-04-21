@@ -9,6 +9,26 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 
+private fun Activity.setBarsModeImp(isLight: Boolean) {
+    val window = WindowCompat.getInsetsController(window, window.decorView)
+    window.isAppearanceLightStatusBars = isLight
+    window.isAppearanceLightNavigationBars = isLight
+}
+
+private fun Activity.setStatusBarModeImp(isLight: Boolean) {
+    val window = WindowCompat.getInsetsController(window, window.decorView)
+    window.isAppearanceLightStatusBars = isLight
+}
+
+private fun Activity.setNavigationBarModeImp(isLight: Boolean) {
+    val window = WindowCompat.getInsetsController(window, window.decorView)
+    window.isAppearanceLightNavigationBars = isLight
+}
+
+///////////////////////////////////////////////////////////////////////////
+// API
+///////////////////////////////////////////////////////////////////////////
+
 /**
  * Sets status bar and navigation bar color properly according to sdk int.
  *
@@ -90,18 +110,42 @@ fun Activity.overridePost34EnterTransition(
  * Sets the status bar and navigation bar to have light content (dark icons).
  */
 fun Activity.setLightBars() {
-    val window = WindowCompat.getInsetsController(window, window.decorView)
-    window.isAppearanceLightStatusBars = true
-    window.isAppearanceLightNavigationBars = true
+    setBarsModeImp(true)
 }
 
 /**
- * Sets the status bar and navigation to have dark content (light icons).
+ * Sets the status bar and navigation bar to have dark content (light icons).
  */
 fun Activity.setDarkBars() {
-    val window = WindowCompat.getInsetsController(window, window.decorView)
-    window.isAppearanceLightStatusBars = false
-    window.isAppearanceLightNavigationBars = false
+    setBarsModeImp(false)
+}
+
+/**
+ * Sets the status bar to have light content (dark icons).
+ */
+fun Activity.setLightStatusBar() {
+    setStatusBarModeImp(true)
+}
+
+/**
+ * Sets the status bar to have dark content (light icons).
+ */
+fun Activity.setDarkStatusBar() {
+    setStatusBarModeImp(false)
+}
+
+/**
+ * Sets the navigation bar to have light content (dark icons).
+ */
+fun Activity.setLightNavigationBar() {
+    setNavigationBarModeImp(true)
+}
+
+/**
+ * Sets the navigation bar to have dark content (light icons).
+ */
+fun Activity.setDarkNavigationBar() {
+    setNavigationBarModeImp(false)
 }
 
 /**
