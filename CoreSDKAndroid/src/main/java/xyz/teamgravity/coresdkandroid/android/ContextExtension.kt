@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import androidx.core.content.getSystemService
 import timber.log.Timber
 
 /**
@@ -41,6 +42,6 @@ fun Context.isDarkMode(): Boolean {
  * Returns `true` if the system-wide dark mode is enabled, ignoring any app-level override.
  */
 fun Context.isSystemInDarkMode(): Boolean {
-    val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-    return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+    val uiModeManager = getSystemService<UiModeManager>()
+    return uiModeManager?.nightMode == UiModeManager.MODE_NIGHT_YES
 }
