@@ -5,10 +5,10 @@ activity = "1.13.0"
 preferences = "1.2.1"
 update = "2.1.0"
 review = "2.0.2"
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 timber = "5.0.1"
 
-android = "9.2.0"
+android = "9.2.1"
 
 sdk-min = "26"
 sdk-compile = "36"
