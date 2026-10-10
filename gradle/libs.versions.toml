@@ -1,18 +1,20 @@
 [versions]
 
-core = "1.18.0"
+core = "1.19.1"
 activity = "1.13.0"
 preferences = "1.2.1"
 update = "2.1.0"
 review = "2.0.2"
 coroutines = "1.11.0"
+serialization = "1.11.0"
 timber = "5.0.1"
 
-android = "9.2.1"
+android = "9.4.1"
+kotlin = "2.4.21"
 
 sdk-min = "26"
-sdk-compile = "36"
-sdk-target = "36"
+sdk-compile = "37"
+sdk-target = "37"
 
 [libraries]
 
@@ -24,8 +26,12 @@ review = { group = "com.google.android.play", name = "review-ktx", version.ref =
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
 
 library = { id = "com.android.library", version.ref = "android" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

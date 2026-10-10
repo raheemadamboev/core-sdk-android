@@ -27,3 +27,8 @@ inline fun <reified T : Parcelable> Intent.getParcelableCompat(key: String): T? 
     return if (BuildUtil.atLeast33()) getParcelableExtra(key, T::class.java)
     else @Suppress("DEPRECATION") getParcelableExtra(key) as T?
 }
+
+inline fun <reified T : Parcelable> Intent.getParcelableArrayListCompat(key: String): ArrayList<T>? {
+    return if (BuildUtil.atLeast33()) getParcelableArrayListExtra(key, T::class.java)
+    else @Suppress("DEPRECATION") getParcelableArrayListExtra(key)
+}

@@ -7,7 +7,9 @@ import java.time.LocalTime
 /**
  * Converts current LocalDate to LocalDateTime that has maximum hours for the day.
  */
-fun LocalDate.atEndOfDay(): LocalDateTime = LocalDateTime.of(this, LocalTime.MAX)
+fun LocalDate.atEndOfDay(): LocalDateTime {
+    return LocalDateTime.of(this, LocalTime.MAX)
+}
 
 /**
  * Returns true if date is equal to today. Otherwise, returns false.

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.library)
+    alias(libs.plugins.serialization)
     id("maven-publish")
 }
 
@@ -9,9 +10,7 @@ android {
     namespace = "xyz.teamgravity.coresdkandroid"
 
     compileSdk {
-        version = release(libs.versions.sdk.compile.get().toInt()) {
-            minorApiLevel = 1
-        }
+        version = release(libs.versions.sdk.compile.get().toInt())
     }
 
     defaultConfig {
@@ -60,6 +59,13 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.services)
+    implementation(libs.coroutines.test)
+
+    // serialization
+    implementation(libs.serialization)
+
+    // reflect
+    implementation(libs.reflect)
 
     // timber
     implementation(libs.timber)
@@ -70,7 +76,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.raheemadamboev"
             artifactId = "core-sdk-android"
-            version = "1.0.46"
+            version = "1.0.47"
 
             afterEvaluate {
                 from(components["release"])
@@ -82,7 +88,8 @@ publishing {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
+            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
     }
 }
