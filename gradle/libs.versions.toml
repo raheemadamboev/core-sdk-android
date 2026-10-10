@@ -13,8 +13,8 @@ android = "9.4.1"
 kotlin = "2.4.21"
 
 sdk-min = "26"
-sdk-compile = "36"
-sdk-target = "36"
+sdk-compile = "37"
+sdk-target = "37"
 
 [libraries]
 
