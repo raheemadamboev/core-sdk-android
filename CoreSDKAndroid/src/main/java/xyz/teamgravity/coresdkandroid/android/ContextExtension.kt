@@ -1,10 +1,16 @@
 package xyz.teamgravity.coresdkandroid.android
 
+import android.annotation.SuppressLint
 import android.app.UiModeManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import timber.log.Timber
 import java.util.Locale
@@ -76,4 +82,25 @@ fun Context.changeLocale(locale: String): Context {
     val config = Configuration(resources.configuration)
     config.setLocale(locale)
     return createConfigurationContext(config)
+}
+
+@DrawableRes
+@SuppressLint("DiscouragedApi")
+fun Context.getDrawableResourceIdFromName(name: String): Int {
+    return resources.getIdentifier(name.removeExtension(), "drawable", packageName)
+}
+
+@RawRes
+@SuppressLint("DiscouragedApi")
+fun Context.getRawResourceIdFromName(name: String): Int {
+    return resources.getIdentifier(name.removeExtension(), "raw", packageName)
+}
+
+fun Context.getDrawableFromName(name: String): Drawable? {
+    return try {
+        ContextCompat.getDrawable(this, getDrawableResourceIdFromName(name))
+    } catch (e: Resources.NotFoundException) {
+        Timber.e(e)
+        null
+    }
 }

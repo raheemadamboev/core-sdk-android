@@ -27,3 +27,8 @@ inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? 
     return if (BuildUtil.atLeast33()) getParcelable(key, T::class.java)
     else @Suppress("DEPRECATION") getParcelable(key) as T?
 }
+
+inline fun <reified T : Parcelable> Bundle.getParcelableArrayListCompat(key: String): ArrayList<T>? {
+    return if (BuildUtil.atLeast33()) getParcelableArrayList(key, T::class.java)
+    else @Suppress("DEPRECATION") getParcelableArrayList(key)
+}

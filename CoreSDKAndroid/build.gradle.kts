@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.library)
+    alias(libs.plugins.serialization)
     id("maven-publish")
 }
 
@@ -60,6 +61,13 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.services)
+    implementation(libs.coroutines.test)
+
+    // serialization
+    implementation(libs.serialization)
+
+    // reflect
+    implementation(libs.reflect)
 
     // timber
     implementation(libs.timber)
@@ -82,7 +90,8 @@ publishing {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
+            "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
     }
 }
