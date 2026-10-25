@@ -74,7 +74,7 @@ class UpdateManagerImp(
         scope.launch {
             val info = getAppUpdateInfoSafely() ?: return@launch
             if (!updateDownloadedNotified && info.installStatus() == InstallStatus.DOWNLOADED) {
-                Timber.i("start(): update is already downloaded.")
+                Timber.i("monitor(): update is already downloaded.")
                 _event.trySend(UpdateManager.UpdateEvent.Downloaded)
                 updateDownloadedNotified = true
                 return@launch
@@ -83,7 +83,7 @@ class UpdateManagerImp(
             val result = info.updateAvailability()
 
             if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
-                Timber.i("start(): update is not available.")
+                Timber.i("monitor(): update is not available.")
                 return@launch
             }
 
