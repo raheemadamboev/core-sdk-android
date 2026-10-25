@@ -8,6 +8,7 @@ review = "2.0.2"
 coroutines = "1.11.0"
 serialization = "1.11.0"
 timber = "5.0.1"
+junit = "5.14.4"
 
 android = "9.4.1"
 kotlin = "2.4.21"
@@ -30,6 +31,7 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+junit = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
 
 [plugins]
 

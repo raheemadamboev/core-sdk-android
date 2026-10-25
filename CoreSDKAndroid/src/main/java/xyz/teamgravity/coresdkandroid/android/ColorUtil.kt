@@ -17,7 +17,7 @@ object ColorUtil {
         if (color.isNullOrBlank()) return onDefault()
         return try {
             color.toColorInt()
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             onDefault()
         }
     }

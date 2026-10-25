@@ -69,6 +69,9 @@ dependencies {
 
     // timber
     implementation(libs.timber)
+
+    // junit
+    compileOnly(libs.junit)
 }
 
 publishing {
@@ -76,7 +79,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.raheemadamboev"
             artifactId = "core-sdk-android"
-            version = "1.0.48"
+            version = "1.0.49"
 
             afterEvaluate {
                 from(components["release"])

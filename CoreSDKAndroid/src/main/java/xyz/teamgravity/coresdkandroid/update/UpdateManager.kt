@@ -1,150 +1,120 @@
 package xyz.teamgravity.coresdkandroid.update
 
-import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.AppUpdateOptions
-import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
-class UpdateManager(
-    context: Context
-) {
+/**
+ * Checks Google Play for a new version of the app and runs the in-app update flow.
+ */
+interface UpdateManager {
 
-    private val manager: AppUpdateManager = AppUpdateManagerFactory.create(context)
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    private val _event = Channel<UpdateEvent>()
-    val event: Flow<UpdateEvent> = _event.receiveAsFlow()
-
-    private var updateAvailableNotified: Boolean = false
-    private var updateDownloadedNotified: Boolean = false
-
-    private val listener = InstallStateUpdatedListener { state ->
-        if (!updateDownloadedNotified && state.installStatus() == InstallStatus.DOWNLOADED) {
-            _event.trySend(UpdateEvent.Downloaded)
-            updateDownloadedNotified = true
-        }
-    }
-
-    private suspend fun getAppUpdateInfoSafely(): AppUpdateInfo? {
-        return withContext(Dispatchers.IO) {
-            try {
-                return@withContext manager.appUpdateInfo.await()
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                Timber.e(e)
-                return@withContext null
-            }
-        }
-    }
+    /**
+     * Emits [UpdateEvent]s while an update is found, started and downloaded.
+     */
+    val event: Flow<UpdateEvent>
 
     ///////////////////////////////////////////////////////////////////////////
     // API
     ///////////////////////////////////////////////////////////////////////////
 
-    fun monitor() {
-        scope.launch {
-            val info = getAppUpdateInfoSafely() ?: return@launch
-            if (!updateDownloadedNotified && info.installStatus() == InstallStatus.DOWNLOADED) {
-                Timber.i("start(): update is already downloaded.")
-                _event.trySend(UpdateEvent.Downloaded)
-                updateDownloadedNotified = true
-                return@launch
-            }
+    /**
+     * Checks for an update and reports what it finds through [event].
+     */
+    fun monitor()
 
-            val result = info.updateAvailability()
+    /**
+     * Stops listening to download progress.
+     */
+    fun stop()
 
-            if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
-                Timber.i("start(): update is not available.")
-                return@launch
-            }
+    /**
+     * Checks once whether an update is available.
+     *
+     * @return Type of the available update, or [Type.None] when there is none.
+     */
+    suspend fun checkAppUpdate(): Type
 
-            if (result == UpdateAvailability.UPDATE_AVAILABLE) {
-                val type = Type.fromPriority(info.updatePriority())
-                if (type == Type.Optional && updateAvailableNotified) return@launch
-                _event.trySend(UpdateEvent.Available(type))
-                updateAvailableNotified = true
-            } else {
-                _event.trySend(UpdateEvent.StartDownload)
-            }
+    /**
+     * Starts downloading the available update.
+     *
+     * @param launcher
+     * Launcher that starts the Play update flow.
+     */
+    fun downloadAppUpdate(launcher: ActivityResultLauncher<IntentSenderRequest>)
 
-        }
-    }
-
-    fun stop() {
-        manager.unregisterListener(listener)
-    }
-
-    suspend fun checkAppUpdate(): Type {
-        val info = getAppUpdateInfoSafely() ?: return Type.None
-        if (info.updateAvailability() != UpdateAvailability.UPDATE_AVAILABLE) return Type.None
-        return Type.fromPriority(info.updatePriority())
-    }
-
-    fun downloadAppUpdate(launcher: ActivityResultLauncher<IntentSenderRequest>) {
-        scope.launch {
-            val info = getAppUpdateInfoSafely() ?: return@launch
-            val result = info.updateAvailability()
-            if (result == UpdateAvailability.UPDATE_NOT_AVAILABLE || result == UpdateAvailability.UNKNOWN) {
-                Timber.w("downloadAppUpdate(): update is not available. Aborted the operation.")
-                return@launch
-            }
-
-            val type = Type.fromPriority(info.updatePriority())
-            Timber.i("downloadAppUpdate(): starting $type update.")
-
-            manager.registerListener(listener)
-
-            manager.startUpdateFlowForResult(
-                info,
-                launcher,
-                AppUpdateOptions.defaultOptions(type.value)
-            )
-        }
-    }
-
-    fun installAppUpdate() {
-        manager.completeUpdate()
-    }
+    /**
+     * Installs the downloaded update and restarts the app.
+     */
+    fun installAppUpdate()
 
     ///////////////////////////////////////////////////////////////////////////
     // Misc
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Kind of update Google Play offers.
+     *
+     * @property value
+     * Play's AppUpdateType for this kind, or -1 for [None].
+     */
     enum class Type(
         val value: Int
     ) {
+
+        /**
+         * No update is available.
+         */
         None(-1),
+
+        /**
+         * An update the user may install later; it downloads in the background while the app keeps running.
+         */
         Optional(AppUpdateType.FLEXIBLE),
+
+        /**
+         * An update the user must install before using the app.
+         */
         Forced(AppUpdateType.IMMEDIATE);
 
         companion object {
+
+            /**
+             * Maps the priority of a Play update to its kind.
+             *
+             * @param priority
+             * Update priority from 0 to 5, set for the release on Google Play.
+             * @return [Forced] for priority 4 or 5, [Optional] otherwise.
+             */
             fun fromPriority(priority: Int): Type {
                 return if (priority > 3) Forced else Optional
             }
         }
     }
 
+    /**
+     * Events emitted through [UpdateManager.event].
+     */
     sealed interface UpdateEvent {
+
+        /**
+         * An update is available.
+         *
+         * @property type
+         * Kind of the available update.
+         */
         data class Available(val type: Type) : UpdateEvent
+
+        /**
+         * Asks the app to start the download with [UpdateManager.downloadAppUpdate] right away, without asking the user
+         * again: an update the user already accepted was interrupted and has to resume.
+         */
         data object StartDownload : UpdateEvent
+
+        /**
+         * The update is downloaded and ready for [UpdateManager.installAppUpdate].
+         */
         data object Downloaded : UpdateEvent
     }
 }
